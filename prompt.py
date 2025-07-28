@@ -1,29 +1,32 @@
 from flask import Flask, request, jsonify
 from openai import OpenAI
-# from dotenv import load_dotenv
+from dotenv import load_dotenv
 import os
 import json
+import google.generativeai as genai
 
-client = OpenAI(
-    api_key="AIzaSyALSSIVvK-CtY4zpieYvnrGxZC-MRyQry0",
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
-)
+load_dotenv()
+
+api_key = os.getenv("GEMINI_API_KEY")
+genai.configure(api_key=api_key)
 
 
 app = Flask(__name__)
 
+model = genai.GenerativeModel("gemini-2.5-flash")
+
 @app.route("/", methods=["GET", "POST"])
-def index():
+def Topic_Gen():
     topics = []
     if request.method == "POST":
         data = request.get_json()
         prompt = data.get("prompt", '')
-        response = client.chat.completions.create(
+        response = model.chat.completions.create(
     model="gemini-2.5-flash",
     messages=[
         {
             "role": "user",
-            "content": "AI automation"
+            "content": prompt
         }
     ]
 )
@@ -38,8 +41,27 @@ def index():
         with open(path, "w") as f:
             json.dump(topics, f, indent=4)
 
-                   
-    return jsonify(topics)
+          ####To enhance code search how to use gemini-2.5-flash         
+    return jsonify({"Topics": topics})
+
+
+def Content_Gen():
+    if request.method == "POST":
+        data = request.get_json()
+        topic = data.get("topic", '')
+        response = model.chat.completions.create(
+            model="gemini-2.5-flash",
+            messages=[
+                {
+                    "role": "user",
+                    "content": f"Generate content for the topic: {topic}"
+                }
+            ]
+        )
+        content = response["choices"][0]["message"]["content"]
+        return jsonify({"content": content})
+    return jsonify({"error": "Invalid request method"})
+
 
 
 if __name__ == "__main__":
