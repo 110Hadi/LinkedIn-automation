@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from openai import OpenAI
 # from dotenv import load_dotenv
 import os
@@ -16,15 +16,16 @@ app = Flask(__name__)
 def index():
     topics = []
     if request.method == "POST":
-        prompt = request.form["prompt"]
+        data = request.get_json()
+        prompt = data.get("prompt", '')
         response = client.chat.completions.create(
     model="gemini-2.5-flash",
-    messages=
+    messages=[
         {
             "role": "user",
-            "content": "prompt"
+            "content": "AI automation"
         }
-    
+    ]
 )
         answer = response["choices"][0]["message"]["content"]
         topics = answer.split("\n")
@@ -38,7 +39,8 @@ def index():
             json.dump(topics, f, indent=4)
 
                    
-    return topics
+    return jsonify(topics)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
