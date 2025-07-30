@@ -13,24 +13,26 @@ genai.configure(api_key=api_key)
 
 app = Flask(__name__)
 
-model = genai.GenerativeModel("gemini-2.5-flash")
+model = genai.GenerativeModel("gemini-1.5-flash")
+chat = model.start_chat(history=[])
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 def Topic_Gen():
     topics = []
-    if request.method == "POST":
+    if request.method == "GET":
         data = request.get_json()
         prompt = data.get("prompt", '')
-        response = model.chat.completions.create(
-    model="gemini-2.5-flash",
-    messages=[
-        {
-            "role": "user",
-            "content": prompt
-        }
-    ]
-)
-        answer = response["choices"][0]["message"]["content"]
+        response = chat.send_message(prompt)
+        answer = response.text
+#     model="gemini-1.5-flash",
+#     messages=[
+#         {
+#             "role": "user",
+#             "content": prompt
+#         }
+#     ]
+# )
+#         answer = response["choices"][0]["message"]["content"]
         topics = answer.split("\n")
         topics = [t.strip("0123456789. ") for t in topics if t.strip()]
 
