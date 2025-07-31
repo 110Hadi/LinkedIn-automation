@@ -24,15 +24,8 @@ def Topic_Gen():
         prompt = data.get("prompt", '')
         response = chat.send_message(prompt)
         answer = response.text
-#     model="gemini-1.5-flash",
-#     messages=[
-#         {
-#             "role": "user",
-#             "content": prompt
-#         }
-#     ]
-# )
-#         answer = response["choices"][0]["message"]["content"]
+
+        #### Splitting the answer into topics
         topics = answer.split("\n")
         topics = [t.strip("0123456789. ") for t in topics if t.strip()]
 
