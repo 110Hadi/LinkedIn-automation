@@ -36,6 +36,11 @@ def Topic_Gen():
         topics = answer.split("\n")
         topics = [t.strip("0123456789. ") for t in topics if t.strip()]
 
+        #### Removing Ai prompts from the topics
+        # for topic in topics:
+        #     if topic[0:2] != "* ":
+        #         topics.remove(topic)
+
 
         #### Save the topics to a JSON file
         ####    -----------file path-------------     --file name--
