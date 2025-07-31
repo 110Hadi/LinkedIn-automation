@@ -70,7 +70,7 @@ def Content_Gen():
             topics.pop(index)
 
             ####generate the chosen topic's content and store it in the dictionary
-            prompt = f"Generate a LinkedIn post about {topic}"
+            prompt = f"Generate a LinkedIn post-worthy content about {topic}"
             response = chat.send_message(prompt)
             answer = response.text
             content[topic] = answer
